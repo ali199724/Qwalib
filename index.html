@@ -229,8 +229,8 @@ body.auth-locked > header, body.auth-locked > main, body.auth-locked > nav, body
     <div class="flex items-center gap-2.5">
       <div class="w-10 h-10 rounded-full bg-pine-700 holes-bg flex items-center justify-center text-gold-100 font-extrabold text-lg shrink-0">ق</div>
       <div>
-        <h1 class="font-extrabold text-lg leading-tight" id="brandName">قوالب</h1>
-        <p class="text-[11px] text-ink/50 -mt-0.5" id="pageSubtitle">إدارة محل الألبان والأجبان</p>
+        <h1 class="font-extrabold text-lg leading-tight" id="brandName">موبيكس</h1>
+        <p class="text-[11px] text-ink/50 -mt-0.5" id="pageSubtitle">إدارة حسابات التجار والموزعين</p>
       </div>
     </div>
     <div class="flex items-center gap-2">
@@ -340,7 +340,7 @@ const App = {
       console.error('Firebase load error:', e);
       this.toast('تعذر تحميل بيانات الحساب من Firebase','error');
     }
-    document.getElementById('brandName').textContent = this.state.company.name || 'قوالب';
+    document.getElementById('brandName').textContent = this.state.company.name || 'موبيكس';
     this.navigate('dashboard');
   },
 
@@ -435,7 +435,7 @@ const App = {
       const t = NAV_TABS.find(n=>n.id===b.dataset.tab);
       b.innerHTML = icon(t.icon,'w-[18px] h-[18px]') + `<span>${t.label}</span>`;
     });
-    const subtitles = {dashboard:'نظرة عامة على المحل', inventory:'إدارة المخزون', treasury:'حركة الخزينة والكاش', expenses:'سجل المصروفات', returns:'سجل المرتجعات', customers:'إدارة العملاء والفواتير'};
+    const subtitles = {dashboard:'نظرة عامة على أداء الشركة', inventory:'إدارة المخزون', treasury:'حركة الخزينة والكاش', expenses:'سجل المصروفات', returns:'سجل المرتجعات', customers:'إدارة العملاء والفواتير'};
     document.getElementById('pageSubtitle').textContent = subtitles[tab];
     this.render();
   },
@@ -1768,7 +1768,7 @@ const App = {
       link.click();
       this.toast('تم تحميل صورة الفاتورة، أرفقها في محادثة واتساب المفتوحة','success');
       setTimeout(()=>{
-        window.open(this.waLink(phone, 'مرفق فاتورة رقم '+inv.number+' بقيمة '+this.money(inv.total)+' - '+(this.state.company.name||'قوالب')), '_blank');
+        window.open(this.waLink(phone, 'مرفق فاتورة رقم '+inv.number+' بقيمة '+this.money(inv.total)+' - '+(this.state.company.name||'موبيكس')), '_blank');
       }, 600);
     }catch(e){ console.error(e); this.toast('تعذر إنشاء الصورة','error'); }
   },
@@ -1815,7 +1815,7 @@ const App = {
         this.state = Object.assign({products:[],expenses:[],returns:[],customers:[],invoices:[],suppliers:[],purchases:[],treasuryAdjustments:[],invoiceSeq:1000,company:{...DEFAULT_COMPANY}}, imported);
         this.normalizeState();
         await this.save();
-        document.getElementById('brandName').textContent = this.state.company.name || 'قوالب';
+        document.getElementById('brandName').textContent = this.state.company.name || 'موبيكس';
         this.closeModal();
         this.navigate(this.tab || 'dashboard');
         this.toast('تم استيراد البيانات وحفظها على Firebase','success');
@@ -1902,7 +1902,7 @@ const App = {
 
   saveSettings(){
     this.state.company = {
-      name: document.getElementById('f_coname').value.trim() || 'قوالب',
+      name: document.getElementById('f_coname').value.trim() || 'موبيكس',
       phone: document.getElementById('f_cophone').value.trim(),
       address: document.getElementById('f_coaddress').value.trim(),
       note: document.getElementById('f_conote').value.trim() || 'شكرًا لتعاملكم معنا'
