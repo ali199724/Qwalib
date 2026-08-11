@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-<title>قوالب | إدارة محل الألبان والأجبان</title>
+<title>موبيكس | إدارة حسابات التجار والموزعين</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -67,8 +67,8 @@ body.auth-locked > header, body.auth-locked > main, body.auth-locked > nav, body
     <div class="bg-white rounded-3xl shadow-card border border-pine-100 overflow-hidden">
       <div class="bg-pine-700 holes-bg p-7 text-center text-white">
         <div class="mx-auto w-16 h-16 rounded-full bg-gold-600/20 border border-gold-200/30 flex items-center justify-center text-gold-100 font-black text-2xl mb-3">ق</div>
-        <h1 class="text-2xl font-black">قوالب</h1>
-        <p class="text-sm text-pine-100 mt-1">إدارة محل الألبان والأجبان</p>
+        <h1 class="text-2xl font-black">موبيكس</h1>
+        <p class="text-sm text-pine-100 mt-1">إدارة حسابات التجار والموزعين</p>
       </div>
       <div class="p-6">
         <div id="authError" class="hidden mb-4 rounded-xl bg-clay-50 text-clay-700 px-4 py-3 text-sm font-semibold"></div>
@@ -86,7 +86,7 @@ body.auth-locked > header, body.auth-locked > main, body.auth-locked > nav, body
         <div id="authLoading" class="hidden text-center py-4 text-sm font-bold text-ink/60">جاري الاتصال...</div>
       </div>
     </div>
-    <p class="text-center text-[11px] text-ink/40 mt-4">بيانات كل حساب محفوظة بشكل منفصل في Firebase.</p>
+    <p class="text-center text-[11px] text-ink/40 mt-4">تسجيل مصرح به فقط.</p>
   </div>
 </div>
 
@@ -304,7 +304,7 @@ const NAV_TABS = [
 /* ================= CONSTANTS ================= */
 const UNITS = ['صفيحة','طرد','كيلو','كيس','علبة','كرتونة','قطعة','شرنك','كانز'];
 const STORAGE_KEY = 'dairy_shop_state_v2';
-const DEFAULT_COMPANY = {name:'قوالب', phone:'', address:'', note:'شكرًا لتعاملكم معنا'};
+const DEFAULT_COMPANY = {name:'موبيكس', phone:'', address:'', note:'شكرًا لتعاملكم معنا'};
 
 /* ================= APP ================= */
 const App = {
