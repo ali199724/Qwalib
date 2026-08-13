@@ -62,17 +62,33 @@ body.auth-locked > header, body.auth-locked > main, body.auth-locked > nav, body
 <body class="bg-cream text-ink min-h-screen">
 
 <!-- ================= FIREBASE AUTH GATE ================= -->
-<div id="authScreen" class="fixed inset-0 z-[200] bg-cream flex items-center justify-center p-4">
-  <div class="w-full max-w-md">
+<style>
+  .auth-tab-active { background: #0F3D2E; color: #fff; }
+  .auth-tab-inactive { background: transparent; color: #0F3D2E; }
+</style>
+<div id="authScreen" class="fixed inset-0 z-[200] bg-cream flex items-center justify-center p-4 overflow-y-auto">
+  <div class="w-full max-w-md my-auto">
     <div class="bg-white rounded-3xl shadow-card border border-pine-100 overflow-hidden">
+      <!-- Header -->
       <div class="bg-pine-700 holes-bg p-7 text-center text-white">
-        <div class="mx-auto w-16 h-16 rounded-full bg-gold-600/20 border border-gold-200/30 flex items-center justify-center text-gold-100 font-black text-2xl mb-3">ق</div>
+        <div class="mx-auto w-16 h-16 rounded-full bg-gold-600/20 border border-gold-200/30 flex items-center justify-center text-gold-100 font-black text-2xl mb-3">م</div>
         <h1 class="text-2xl font-black">موبيكس</h1>
         <p class="text-sm text-pine-100 mt-1">إدارة حسابات التجار والموزعين</p>
       </div>
+
+      <!-- Tabs -->
+      <div id="authTabs" class="flex border-b border-pine-100">
+        <button onclick="AuthUI.showPanel('login')" id="tabLogin" class="flex-1 py-3 text-sm font-bold transition-all auth-tab-active rounded-none">تسجيل الدخول</button>
+        <button onclick="AuthUI.showPanel('register')" id="tabRegister" class="flex-1 py-3 text-sm font-bold transition-all auth-tab-inactive rounded-none">حساب جديد</button>
+      </div>
+
       <div class="p-6">
-        <div id="authError" class="hidden mb-4 rounded-xl bg-clay-50 text-clay-700 px-4 py-3 text-sm font-semibold"></div>
-        <div id="loginForm" class="space-y-4">
+        <!-- Error / Success message -->
+        <div id="authError" class="hidden mb-4 rounded-xl bg-clay-50 text-clay-700 px-4 py-3 text-sm font-semibold text-center"></div>
+        <div id="authSuccess" class="hidden mb-4 rounded-xl bg-pine-50 text-pine-700 px-4 py-3 text-sm font-semibold text-center"></div>
+
+        <!-- ===== LOGIN PANEL ===== -->
+        <div id="panelLogin" class="space-y-4">
           <div>
             <label class="text-xs font-bold text-ink/60 mb-1 block">البريد الإلكتروني</label>
             <input id="authEmail" type="email" autocomplete="email" dir="ltr" class="w-full border border-pine-100 rounded-xl px-3 py-3 text-sm" placeholder="name@example.com">
@@ -81,18 +97,79 @@ body.auth-locked > header, body.auth-locked > main, body.auth-locked > nav, body
             <label class="text-xs font-bold text-ink/60 mb-1 block">كلمة المرور</label>
             <input id="authPassword" type="password" autocomplete="current-password" dir="ltr" class="w-full border border-pine-100 rounded-xl px-3 py-3 text-sm" placeholder="••••••••">
           </div>
-          <button id="loginBtn" onclick="AuthUI.login()" class="w-full py-3 rounded-xl bg-pine-700 text-white font-bold">تسجيل الدخول</button>
+          <button onclick="AuthUI.login()" class="w-full py-3 rounded-xl bg-pine-700 text-white font-bold">تسجيل الدخول</button>
+          <div class="text-center">
+            <button onclick="AuthUI.showPanel('forgot')" class="text-xs text-pine-600 font-bold underline underline-offset-2">نسيت كلمة المرور؟</button>
+          </div>
         </div>
+
+        <!-- ===== REGISTER PANEL ===== -->
+        <div id="panelRegister" class="hidden space-y-4">
+          <div>
+            <label class="text-xs font-bold text-ink/60 mb-1 block">الاسم الكامل</label>
+            <input id="regName" type="text" autocomplete="name" class="w-full border border-pine-100 rounded-xl px-3 py-3 text-sm" placeholder="محمد أحمد">
+          </div>
+          <div>
+            <label class="text-xs font-bold text-ink/60 mb-1 block">البريد الإلكتروني</label>
+            <input id="regEmail" type="email" autocomplete="email" dir="ltr" class="w-full border border-pine-100 rounded-xl px-3 py-3 text-sm" placeholder="name@example.com">
+          </div>
+          <div>
+            <label class="text-xs font-bold text-ink/60 mb-1 block">كلمة المرور <span class="text-ink/40 font-normal">(6 أحرف على الأقل)</span></label>
+            <input id="regPassword" type="password" autocomplete="new-password" dir="ltr" class="w-full border border-pine-100 rounded-xl px-3 py-3 text-sm" placeholder="••••••••">
+          </div>
+          <div>
+            <label class="text-xs font-bold text-ink/60 mb-1 block">
+              رقم الواتساب <span class="text-clay-600">*</span>
+            </label>
+            <div class="flex gap-2">
+              <span class="flex items-center px-3 bg-pine-50 border border-pine-100 rounded-xl text-sm font-bold text-pine-700 shrink-0">+966</span>
+              <input id="regPhone" type="tel" dir="ltr" class="flex-1 border border-pine-100 rounded-xl px-3 py-3 text-sm" placeholder="5xxxxxxxx">
+            </div>
+            <p class="text-[11px] text-ink/40 mt-1 font-medium">سيُرسل إليك رابط التفعيل على هذا الرقم</p>
+          </div>
+          <button onclick="AuthUI.register()" class="w-full py-3 rounded-xl bg-pine-700 text-white font-bold">إنشاء حساب</button>
+        </div>
+
+        <!-- ===== FORGOT PASSWORD PANEL ===== -->
+        <div id="panelForgot" class="hidden space-y-4">
+          <div class="text-center mb-2">
+            <div class="w-12 h-12 mx-auto rounded-full bg-gold-50 border border-gold-100 flex items-center justify-center text-2xl mb-2">🔑</div>
+            <p class="text-sm font-bold text-ink/70">أدخل بريدك الإلكتروني وسنرسل لك رابط إعادة تعيين كلمة المرور</p>
+          </div>
+          <div>
+            <label class="text-xs font-bold text-ink/60 mb-1 block">البريد الإلكتروني</label>
+            <input id="forgotEmail" type="email" dir="ltr" class="w-full border border-pine-100 rounded-xl px-3 py-3 text-sm" placeholder="name@example.com">
+          </div>
+          <button onclick="AuthUI.sendReset()" class="w-full py-3 rounded-xl bg-gold-600 text-white font-bold">إرسال رابط الاسترداد</button>
+          <div class="text-center">
+            <button onclick="AuthUI.showPanel('login')" class="text-xs text-pine-600 font-bold underline underline-offset-2">← العودة لتسجيل الدخول</button>
+          </div>
+        </div>
+
+        <!-- ===== PENDING ACTIVATION PANEL ===== -->
+        <div id="panelPending" class="hidden space-y-4 text-center">
+          <div class="w-16 h-16 mx-auto rounded-full bg-gold-50 border-2 border-gold-200 flex items-center justify-center text-4xl">⏳</div>
+          <h2 class="text-lg font-black text-pine-700">حسابك قيد المراجعة</h2>
+          <p class="text-sm text-ink/60 font-semibold leading-relaxed">
+            شكراً لتسجيلك! تم استلام طلبك وسيتم التواصل معك عبر الواتساب لتفعيل حسابك.
+          </p>
+          <div class="bg-pine-50 border border-pine-100 rounded-2xl p-4 text-sm text-pine-700 font-bold">
+            📲 انتظر رسالة التفعيل على واتساب
+          </div>
+          <button onclick="AuthUI.logout()" class="w-full py-3 rounded-xl border border-pine-100 text-ink font-bold text-sm">تسجيل الخروج</button>
+        </div>
+
+        <!-- Loading -->
         <div id="authLoading" class="hidden text-center py-4 text-sm font-bold text-ink/60">جاري الاتصال...</div>
       </div>
     </div>
-    <p class="text-center text-[11px] text-ink/40 mt-4">تسجيل مصرح به فقط.</p>
+    <p class="text-center text-[11px] text-ink/40 mt-4">موبيكس — نظام إدارة الحسابات</p>
   </div>
 </div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
-  import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, EmailAuthProvider, reauthenticateWithCredential } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
+  import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendPasswordResetEmail, signOut, EmailAuthProvider, reauthenticateWithCredential } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
   import { getFirestore, doc, getDoc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
   // ================= FIREBASE CONFIG =================
@@ -127,6 +204,17 @@ body.auth-locked > header, body.auth-locked > main, body.auth-locked > nav, body
     get currentUser(){ return auth?.currentUser || null; },
     login: (email, password) => signInWithEmailAndPassword(auth, email, password),
     logout: () => signOut(auth),
+    register: (email, password) => createUserWithEmailAndPassword(auth, email, password),
+    resetPassword: (email) => sendPasswordResetEmail(auth, email),
+    async saveUserProfile(uid, data){
+      const ref = doc(db, 'users', uid, 'profile', 'info');
+      await setDoc(ref, data, {merge: true});
+    },
+    async getUserProfile(uid){
+      const ref = doc(db, 'users', uid, 'profile', 'info');
+      const snap = await getDoc(ref);
+      return snap.exists() ? snap.data() : null;
+    },
     async loadState(){
       const user = auth?.currentUser;
       if (!user) throw new Error('AUTH_REQUIRED');
@@ -154,19 +242,24 @@ body.auth-locked > header, body.auth-locked > main, body.auth-locked > nav, body
   };
 
   window.AuthUI = {
+
+    // ---- Helpers ----
     setLoading(loading){
       document.getElementById('authLoading').classList.toggle('hidden', !loading);
-      ['loginForm'].forEach(id => document.getElementById(id).classList.toggle('opacity-50', loading));
     },
-    error(message){
+    error(msg){
       const el = document.getElementById('authError');
-      el.textContent = message;
-      el.classList.remove('hidden');
+      el.textContent = msg; el.classList.remove('hidden');
+      document.getElementById('authSuccess').classList.add('hidden');
     },
-    clearError(){ document.getElementById('authError').classList.add('hidden'); },
-    showLogin(){
-      this.clearError();
-      document.getElementById('loginForm').classList.remove('hidden');
+    success(msg){
+      const el = document.getElementById('authSuccess');
+      el.textContent = msg; el.classList.remove('hidden');
+      document.getElementById('authError').classList.add('hidden');
+    },
+    clear(){
+      document.getElementById('authError').classList.add('hidden');
+      document.getElementById('authSuccess').classList.add('hidden');
     },
     message(err){
       const code = err?.code || '';
@@ -179,22 +272,100 @@ body.auth-locked > header, body.auth-locked > main, body.auth-locked > nav, body
         'auth/weak-password':'كلمة المرور ضعيفة. استخدم 6 أحرف أو أكثر.',
         'auth/too-many-requests':'تمت محاولات كثيرة. حاول مرة أخرى لاحقًا.',
         'auth/network-request-failed':'تعذر الاتصال بالإنترنت.',
-        'auth/operation-not-allowed':'تسجيل الدخول بالبريد الإلكتروني غير مفعّل في Firebase.'
+        'auth/operation-not-allowed':'تسجيل الدخول بالبريد الإلكتروني غير مفعّل في Firebase.',
+        'auth/missing-password':'أدخل كلمة المرور.'
       };
       return map[code] || err?.message || 'حدث خطأ غير متوقع.';
     },
+
+    // ---- Panel switching ----
+    showPanel(name){
+      this.clear();
+      ['login','register','forgot','pending'].forEach(p => {
+        document.getElementById('panel'+p.charAt(0).toUpperCase()+p.slice(1)).classList.toggle('hidden', p !== name);
+      });
+      // tabs visibility
+      const tabs = document.getElementById('authTabs');
+      tabs.classList.toggle('hidden', name === 'forgot' || name === 'pending');
+      if(name === 'login' || name === 'register'){
+        document.getElementById('tabLogin').className = 'flex-1 py-3 text-sm font-bold transition-all rounded-none ' + (name==='login'?'auth-tab-active':'auth-tab-inactive');
+        document.getElementById('tabRegister').className = 'flex-1 py-3 text-sm font-bold transition-all rounded-none ' + (name==='register'?'auth-tab-active':'auth-tab-inactive');
+      }
+    },
+
+    // ---- Login ----
     async login(){
-      if(!FirebaseBridge.configured){ this.error('أدخل Firebase Configuration أولًا داخل الملف.'); return; }
+      if(!FirebaseBridge.configured){ this.error('Firebase غير مهيأ بعد.'); return; }
       const email = document.getElementById('authEmail').value.trim();
       const password = document.getElementById('authPassword').value;
       if(!email || !password){ this.error('أدخل البريد الإلكتروني وكلمة المرور.'); return; }
-      this.clearError(); this.setLoading(true);
-      try { await FirebaseBridge.login(email,password); }
+      this.clear(); this.setLoading(true);
+      try {
+        const cred = await FirebaseBridge.login(email, password);
+        // Check activation status
+        const profile = await FirebaseBridge.getUserProfile(cred.user.uid);
+        if(profile && profile.status === 'pending'){
+          // Show pending screen, don't let them in
+          this.showPanel('pending');
+          // Stay signed in but app stays locked — onAuthStateChanged will fire,
+          // we handle it below by checking status again there.
+        }
+        // If approved (status === 'active' or no status field yet for legacy admin accounts),
+        // onAuthStateChanged will hide the auth screen normally.
+      }
       catch(e){ this.error(this.message(e)); }
       finally { this.setLoading(false); }
     },
+
+    // ---- Register ----
+    async register(){
+      if(!FirebaseBridge.configured){ this.error('Firebase غير مهيأ بعد.'); return; }
+      const name  = document.getElementById('regName').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      const pass  = document.getElementById('regPassword').value;
+      const phone = document.getElementById('regPhone').value.trim();
+
+      if(!name)  { this.error('أدخل اسمك الكامل.'); return; }
+      if(!email) { this.error('أدخل البريد الإلكتروني.'); return; }
+      if(!pass)  { this.error('أدخل كلمة المرور.'); return; }
+      if(!phone) { this.error('رقم الواتساب مطلوب.'); return; }
+      if(!/^5\d{8}$/.test(phone)){ this.error('أدخل رقم واتساب صحيح (مثال: 5xxxxxxxx).'); return; }
+
+      this.clear(); this.setLoading(true);
+      try {
+        const cred = await FirebaseBridge.register(email, pass);
+        // Save profile with pending status + WhatsApp number
+        await FirebaseBridge.saveUserProfile(cred.user.uid, {
+          name,
+          email,
+          whatsapp: '+966' + phone,
+          status: 'pending',
+          createdAt: new Date().toISOString()
+        });
+        // Show pending message — do NOT unlock app
+        this.showPanel('pending');
+      }
+      catch(e){ this.error(this.message(e)); }
+      finally { this.setLoading(false); }
+    },
+
+    // ---- Reset password ----
+    async sendReset(){
+      if(!FirebaseBridge.configured){ this.error('Firebase غير مهيأ بعد.'); return; }
+      const email = document.getElementById('forgotEmail').value.trim();
+      if(!email){ this.error('أدخل بريدك الإلكتروني.'); return; }
+      this.clear(); this.setLoading(true);
+      try {
+        await FirebaseBridge.resetPassword(email);
+        this.success('✅ تم إرسال رابط إعادة تعيين كلمة المرور. تفقد بريدك الإلكتروني.');
+      }
+      catch(e){ this.error(this.message(e)); }
+      finally { this.setLoading(false); }
+    },
+
+    // ---- Logout ----
     async logout(){
-      try { await FirebaseBridge.logout(); } catch(e){ console.error(e); }
+      try { await FirebaseBridge.logout(); this.showPanel('login'); } catch(e){ console.error(e); }
     }
   };
 
@@ -207,12 +378,25 @@ body.auth-locked > header, body.auth-locked > main, body.auth-locked > nav, body
     onAuthStateChanged(auth, async user => {
       const authScreen = document.getElementById('authScreen');
       if(user){
+        // Check if account is activated
+        try {
+          const profile = await FirebaseBridge.getUserProfile(user.uid);
+          if(profile && profile.status === 'pending'){
+            // Account pending — keep app locked, show pending screen
+            document.body.classList.add('auth-locked');
+            authScreen.classList.remove('hidden');
+            window.AuthUI?.showPanel('pending');
+            return;
+          }
+        } catch(e){ /* If no profile (legacy admin), allow access */ }
+        // Activated or admin account — unlock app
         document.body.classList.remove('auth-locked');
         authScreen.classList.add('hidden');
         window.dispatchEvent(new CustomEvent('firebase-auth-ready', {detail:{user}}));
       }else{
         document.body.classList.add('auth-locked');
         authScreen.classList.remove('hidden');
+        window.AuthUI?.showPanel('login');
       }
     });
   }else{
