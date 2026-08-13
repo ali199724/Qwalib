@@ -329,7 +329,7 @@ body.auth-locked > header, body.auth-locked > main, body.auth-locked > nav, body
       if(!email) { this.error('أدخل البريد الإلكتروني.'); return; }
       if(!pass)  { this.error('أدخل كلمة المرور.'); return; }
       if(!phone) { this.error('رقم الواتساب مطلوب.'); return; }
-      if(!/^5\d{8}$/.test(phone)){ this.error('أدخل رقم واتساب صحيح (مثال: 5xxxxxxxx).'); return; }
+      if(!/^01\d{9}$/.test(phone)){ this.error('أدخل رقم واتساب صحيح (مثال: 01xxxxxxxxx).'); return; }
 
       this.clear(); this.setLoading(true);
       try {
